@@ -30,17 +30,14 @@
 // BUSY pin:  PB3
 SX1280 radio = new Module(PA8, PB4, PA0, PB3);
 
-// or using RadioShield
-// https://github.com/jgromes/RadioShield
-//SX1280 radio = RadioShield.ModuleA;
-
 void setup() {
   Serial.begin(9600);
 
   // initialize SX1280 with default settings
-  Serial.print(F("[SX1280] Initializing ... "));
+  Serial.print(F("[SX1280] Initializing Slave... "));
   // int state = radio.begin();
-  int state = radio.begin( 2400.0, 1625, 10, 7,RADIOLIB_SX128X_SYNC_WORD_PRIVATE, 10, 12);
+  int state = radio.begin( 2400.0, 406.25, 10, 8,RADIOLIB_SX128X_SYNC_WORD_PRIVATE, 10, 20);
+
   if (state == RADIOLIB_ERR_NONE) {
     Serial.println(F("success!"));
   } else {
@@ -67,7 +64,7 @@ void loop() {
     { 13308, 13493, 13528, 13515, 13430, 13376 }
   };
 
-  int state = radio.startRanging(false, 0x12345678);
+  int state = radio.range(false, 0x12345678, calibration);
 
   // you can also receive data as byte array
   /*
@@ -78,6 +75,10 @@ void loop() {
   if (state == RADIOLIB_ERR_NONE) {
     // packet was successfully received
     Serial.println(F("success!"));
+
+    Serial.print(F("[SX1280] Distance:\t\t\t"));
+    Serial.print(radio.getRangingResult());
+    Serial.println(F(" meters (raw)"));
 
     // print the data of the packet
     Serial.print(F("[SX1280] Data:\t\t"));
@@ -116,3 +117,23 @@ void loop() {
 
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
